@@ -1,0 +1,22 @@
+import express from "express";
+import { CreateCustomerController } from "../controllers/CreateCustomerController";
+import { ListCostumersController } from "../controllers/ListCustomersController";
+import { DeleteCustomerController } from "../controllers/DeleteCustomerController";
+
+export const userRoutes = express.Router();
+
+userRoutes.get('/', (req: express.Request, res: express.Response) => {
+    res.send('API rodando com Express!');
+  });
+
+userRoutes.post('/customer', async (req, res) => {
+    return new CreateCustomerController().handle(req, res);
+});
+
+userRoutes.get('/customers', async (req, res) => {
+    return new ListCostumersController().handle(req, res);
+});
+
+userRoutes.delete('/customer', async (req, res) => {
+    return new DeleteCustomerController().handle(req, res);
+});
