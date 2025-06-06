@@ -3,12 +3,13 @@ import prismaClient from "../prisma";
 interface CreateCustomerProps {
     name: string;
     email: string;
+    password: string;
 }
 
 class CreateCustomerService {
-    async execute({name, email}: CreateCustomerProps){
+    async execute({name, email, password}: CreateCustomerProps){
 
-        if(!name || !email){
+        if(!name || !email || !password){
             throw new Error("Nome e email são obrigatórios");
         }
 
@@ -16,6 +17,7 @@ class CreateCustomerService {
             data: {
                 name,
                 email,
+                password,
                 status: true
             }
         })

@@ -4,12 +4,12 @@ import { CreateCustomerService } from "../services/CreateCustumerService";
 class CreateCustomerController {
     async handle(req: Request, res: Response){
 
-        const {name, email} = req.body as { name: string, email: string };
-        console.log(name, email);
+        const {name, email, password} = req.body as { name: string, email: string, password: string };
+        console.log(name, email, password);
 
 
         const CustomerService = new CreateCustomerService();
-        const customer = await CustomerService.execute({ name, email });
+        const customer = await CustomerService.execute({ name, email, password });
 
         res.send(customer);
     }

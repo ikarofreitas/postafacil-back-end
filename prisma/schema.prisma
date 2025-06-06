@@ -18,6 +18,7 @@ model Customer{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   email String @unique
+  password String
   status Boolean
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
