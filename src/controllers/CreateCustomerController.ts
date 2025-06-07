@@ -9,11 +9,13 @@ class CreateCustomerController {
 
 
         const CustomerService = new CreateCustomerService();
-        const customer = await CustomerService.execute({ name, email, password });
-
-        res.send(customer);
+        try{
+            const customer = await CustomerService.execute({ name, email, password });
+            res.status(201).send(customer);  
+        }catch (error: any) {
+            res.status(400).json({ error: error.message});
+        }
     }
-
 }
 
 export {CreateCustomerController};

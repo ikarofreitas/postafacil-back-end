@@ -1,4 +1,6 @@
 import prismaClient from "../prisma";
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+
 
 interface CreateCustomerProps {
     name: string;
@@ -12,7 +14,7 @@ class CreateCustomerService {
         if(!name || !email || !password){
             throw new Error("Nome e email são obrigatórios");
         }
-
+    try{
         const customer = await prismaClient.customer.create({
             data: {
                 name,
@@ -23,6 +25,14 @@ class CreateCustomerService {
         })
         
         return customer;
+    } catch (error) {
+        if(error instanceof PrismaClientKnownRequestError){
+            if(error.code === "P2002"){
+                throw new Error("Email já cadastrado");
+            }
+        }
+        throw new Error('Erro ao cadastrar usuário');
+    }
     }
     
 }
