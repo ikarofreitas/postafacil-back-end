@@ -3,6 +3,7 @@ import { CreateCustomerController } from "../controllers/CreateCustomerControlle
 import { ListCostumersController } from "../controllers/ListCustomersController";
 import { DeleteCustomerController } from "../controllers/DeleteCustomerController";
 import { login } from "../controllers/authController";
+import { validatePassword } from "../middlewares/validatePassword";
 
 export const userRoutes = express.Router();
 
@@ -10,7 +11,7 @@ userRoutes.get('/', (req: express.Request, res: express.Response) => {
     res.send('API rodando com Express!');
   });
 
-userRoutes.post('/customer', async (req, res) => {
+userRoutes.post('/customer', validatePassword, async (req, res) => {
     return new CreateCustomerController().handle(req, res);
 });
 
