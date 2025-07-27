@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response) => {
         token,
         user: {
           id: customer.id,
-          nome: customer.name,
+          name: customer.name,
           email: customer.email,
         },
       });
