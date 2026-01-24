@@ -1,9 +1,8 @@
 
----
 
 ## 📌 README para **postafacil-back-end** (API)
 
-```markdown
+
 # 🔗 PostaFácil Back-End
 
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
