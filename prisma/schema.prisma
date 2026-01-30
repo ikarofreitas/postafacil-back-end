@@ -3,6 +3,15 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+enum PostStatus {
+  SCHEDULED
+  DUE
+  DONE
+}
+
+enum NotificationType {
+  POST_DUE
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -14,14 +23,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer{
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String @unique
-  password String
-  status Boolean
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+model Customer {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String          @unique
+  password      String
+  status        Boolean
+  posts         ScheduledPost[]
+  notifications Notification[]
+  createdAt     DateTime?       @default(now())
+  updatedAt     DateTime?       @updatedAt
 
   @@map("customers")
+}
+
+model ScheduledPost {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  customerId String   @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  title    String
+  content  String
+  hashtags String?
+  imageUrl String?
+
+  scheduledAt DateTime
+  status      PostStatus @default(SCHEDULED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("scheduled_posts")
+}
+
+model Notification {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  customerId String   @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  type    NotificationType
+  title   String
+  message String
+  read    Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
 }
