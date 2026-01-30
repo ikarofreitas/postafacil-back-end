@@ -21,6 +21,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/escritor', userRoutes);
+app.use('/posts', userRoutes);
 
 app.get('/', (req: express.Request, res: express.Response) => {
 res.send('API rodando com Express!');
