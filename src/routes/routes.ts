@@ -6,6 +6,7 @@ import { DeleteCustomerController } from "../controllers/DeleteCustomerControlle
 import { ScheduledPostsController } from "../controllers/ScheduledPostsController";
 import { validatePassword } from "../middlewares/validatePassword";
 import { PostNotificationController } from "../controllers/PostNotificationController";
+import { mockAuth } from "../middlewares/mockAuth";
 
 export const userRoutes = express.Router();
 const scheduledPostsController = new ScheduledPostsController();
@@ -28,12 +29,12 @@ userRoutes.delete('/customer', async (req, res) => {
 });
 
 // Posts agendados (calendário)
-userRoutes.post('/scheduled-posts', (req, res) => scheduledPostsController.create(req, res));
-userRoutes.get('/scheduled-posts', (req, res) => scheduledPostsController.listByCustomer(req, res));
-userRoutes.get('/scheduled-posts/check-due', (req, res) => scheduledPostsController.checkDuePosts(req, res));
-userRoutes.get('/scheduled-posts/:id', (req, res) => scheduledPostsController.getById(req, res));
-userRoutes.patch('/scheduled-posts/:id', (req, res) => scheduledPostsController.update(req, res));
-userRoutes.delete('/scheduled-posts/:id', (req, res) => scheduledPostsController.delete(req, res));
+userRoutes.post('/scheduled-posts', mockAuth, (req, res) => scheduledPostsController.create(req, res));
+userRoutes.get('/scheduled-posts', mockAuth, (req, res) => scheduledPostsController.listByCustomer(req, res));
+userRoutes.get('/scheduled-posts/check-due', mockAuth, (req, res) => scheduledPostsController.checkDuePosts(req, res));
+userRoutes.get('/scheduled-posts/:id',  mockAuth, (req, res) => scheduledPostsController.getById(req, res));
+userRoutes.patch('/scheduled-posts/:id',  mockAuth, (req, res) => scheduledPostsController.update(req, res));
+userRoutes.delete('/scheduled-posts/:id',  mockAuth, (req, res) => scheduledPostsController.delete(req, res));
 
 // Rotas de notificação dos posts agendados
 userRoutes.get(

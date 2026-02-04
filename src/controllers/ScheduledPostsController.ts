@@ -7,7 +7,10 @@ class ScheduledPostsController {
 
   async create(req: Request, res: Response) {
     try {
-      const { customerId, title, content, hashtags, imageUrl, scheduledAt } = req.body;
+      const { title, content, hashtags, imageUrl, scheduledAt } = req.body;
+      if (!req.user) return res.status(401).json({ error: "Usuário não autenticado." });
+
+      const customerId = req.user.id;
       const post = await this.service.create({
         customerId,
         title,
@@ -24,27 +27,50 @@ class ScheduledPostsController {
   }
 
   async listByCustomer(req: Request, res: Response) {
-    try {
-      const { customerId, startDate, endDate, status } = req.query;
-
-      if (!customerId || typeof customerId !== "string") {
-        return res.status(400).json({ error: "customerId é obrigatório na query." });
-      }
-
-      const filters: { startDate?: Date; endDate?: Date; status?: PostStatus } = {};
-      if (startDate && typeof startDate === "string") filters.startDate = new Date(startDate);
-      if (endDate && typeof endDate === "string") filters.endDate = new Date(endDate);
-      if (status && typeof status === "string" && Object.values(PostStatus).includes(status as PostStatus)) {
-        filters.status = status as PostStatus;
-      }
-
-      const posts = await this.service.listByCustomer(customerId, Object.keys(filters).length ? filters : undefined);
-      return res.status(200).json(posts);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Erro ao listar posts.";
-      return res.status(400).json({ error: message });
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Usuário não autenticado." });
     }
+
+    const customerId = req.user.id;
+
+    const { startDate, endDate, status } = req.query;
+
+    const filters: {
+      startDate?: Date;
+      endDate?: Date;
+      status?: PostStatus;
+    } = {};
+
+    if (startDate && typeof startDate === "string") {
+      filters.startDate = new Date(startDate);
+    }
+
+    if (endDate && typeof endDate === "string") {
+      filters.endDate = new Date(endDate);
+    }
+
+    if (
+      status &&
+      typeof status === "string" &&
+      Object.values(PostStatus).includes(status as PostStatus)
+    ) {
+      filters.status = status as PostStatus;
+    }
+
+    const posts = await this.service.listByCustomer(
+      customerId,
+      Object.keys(filters).length ? filters : undefined
+    );
+
+    return res.status(200).json(posts);
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Erro ao listar posts.";
+    return res.status(400).json({ error: message });
   }
+}
+
 
   async getById(req: Request, res: Response) {
     try {
